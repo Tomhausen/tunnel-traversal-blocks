@@ -22,14 +22,28 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (bot.overlapsWith(bottom)) {
         bot.vy = -150
+        timer.background(function () {
+            clockwise_flip()
+        })
     }
     if (bot.overlapsWith(top)) {
         bot.vy = 150
+        timer.background(function () {
+            anticlockwise_flip()
+        })
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (bot, obstacle) {
     game.over(true)
 })
+function clockwise_flip () {
+    bot.y += -5
+    while (!(bot.overlapsWith(bottom))) {
+        transformSprites.changeRotation(bot, 10)
+        pause(50)
+    }
+    transformSprites.rotateSprite(bot, 90)
+}
 function spawn_obstacle () {
     obstacle = sprites.create(assets.image`blue obstacle`, SpriteKind.Enemy)
     obstacle.bottom = 110
@@ -44,6 +58,14 @@ function spawn_obstacle () {
 function move_camera () {
     scene.centerCameraAt(bot.x + camera_offset, 60)
     camera_right = scene.cameraProperty(CameraProperty.Right)
+}
+function anticlockwise_flip () {
+    bot.y += 5
+    while (!(bot.overlapsWith(top))) {
+        transformSprites.changeRotation(bot, -10)
+        pause(50)
+    }
+    transformSprites.rotateSprite(bot, 90)
 }
 function y_movement () {
     if (bot.y > 60) {
